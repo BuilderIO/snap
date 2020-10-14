@@ -8,3 +8,4 @@ The snappiest web framework for [Solid](https://github.com/ryansolid/solid)
 - Easy data fetching and transfer
 - Prefetching
 - Bleeding edge performance
+- Easy to get started building with [Solid](https://github.com/ryansolid/solid) with prescriptive best practices
