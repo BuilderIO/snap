@@ -5,4 +5,5 @@ const cwd = process.cwd();
 
 export async function build() {
   const pages = await glob('pages/**/*');
+  console.log('pages', pages);
 }

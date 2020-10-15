@@ -1,3 +1,5 @@
+import {} from 'solid-js';
+
 export function Document() {
   return (
     <html>
