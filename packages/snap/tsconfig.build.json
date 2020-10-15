@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.build.json",
   "compilerOptions": {
     "skipLibCheck": true,
+    "jsx": "preserve",
     "declarationDir": "./dist",
     "rootDir": "./src",
     "baseUrl": "./"

@@ -9,6 +9,6 @@
   },
   "dependencies": {
     "@builder.io/snap": "latest",
-    "solid": "latest"
+    "solid-js": "latest"
   }
 }
