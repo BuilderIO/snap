@@ -3,10 +3,7 @@
   "compilerOptions": {
     "noEmit": false,
     "emitDeclarationOnly": true,
-    "declaration": true,
-    "paths": {
-      "@taxi/*": ["./node_modules/@taxi/*/src"]
-    }
+    "declaration": true
   },
   "exclude": ["**/*.story.*", "**/*.test.*", "dist"],
   "include": []
