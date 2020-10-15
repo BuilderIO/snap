@@ -14,4 +14,4 @@
 
 This project is currently under development
 
-See [examples/basic] for an example Snap site
+See [examples/basic](examples/basic) for an example Snap site
