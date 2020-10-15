@@ -2,8 +2,13 @@ import { Configuration } from 'webpack';
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import * as path from 'path';
+const solid = require('babel-preset-solid');
+const ts = require('@babel/preset-typescript');
+const env = require('@babel/preset-env');
 const TerserPlugin = require('terser-webpack-plugin');
 
+console.log(path.join(__dirname, '../../../node_modules'));
 const config = (
   _env: unknown = 'production',
   { mode = 'none' }: Configuration = {},
@@ -14,6 +19,7 @@ const config = (
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
     plugins: [new TsconfigPathsPlugin({})],
   },
+  resolveLoader: { modules: [path.join(__dirname, '../../node_modules')] },
   module: {
     rules: [
       {
@@ -26,10 +32,10 @@ const config = (
         loader: 'babel-loader',
         options: {
           presets: [
-            'solid',
-            '@babel/preset-typescript',
+            solid,
+            ts,
             [
-              '@babel/preset-env',
+              env,
               {
                 useBuiltIns: 'entry',
                 corejs: '3.0.0',

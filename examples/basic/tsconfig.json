@@ -4,6 +4,7 @@
     "esModuleInterop": true,
     "strict": true,
     "jsx": "preserve",
-    "outDir": "dist"
+    "outDir": "dist",
+    "baseUrl": "."
   }
 }
