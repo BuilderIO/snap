@@ -1,0 +1,14 @@
+{
+  "name": "@builder.io/snap-example-basic",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "snap dev",
+    "build": "snap build",
+    "start": "snap start"
+  },
+  "dependencies": {
+    "@builder.io/snap": "latest",
+    "solid": "latest"
+  }
+}

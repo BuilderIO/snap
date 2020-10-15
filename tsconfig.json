@@ -15,10 +15,6 @@
       "*": ["node_modules", "packages"]
     }
   },
-  "awesomeTypescriptLoaderOptions": {
-    "useBabel": true,
-    "babelCore": "@babel/core"
-  },
   "include": ["packages", "jest-dom/extend-expect"],
   "exclude": ["node_modules", "dist"]
 }
