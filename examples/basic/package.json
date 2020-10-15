@@ -8,7 +8,7 @@
     "start": "snap start"
   },
   "dependencies": {
-    "@builder.io/snap": "latest",
+    "@builder.io/snap": "../../packages/snap",
     "solid-js": "latest"
   }
 }
