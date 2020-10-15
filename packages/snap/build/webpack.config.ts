@@ -5,8 +5,8 @@ import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 const TerserPlugin = require('terser-webpack-plugin');
 
 const config = (
-  _env: unknown,
-  { mode = 'none' }: Configuration,
+  _env: unknown = 'production',
+  { mode = 'none' }: Configuration = {},
 ): Configuration => ({
   mode,
   devtool: mode === 'development' ? 'inline-source-map' : false,
