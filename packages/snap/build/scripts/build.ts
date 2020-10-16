@@ -4,6 +4,7 @@ import webpack from 'webpack';
 import config from '../webpack.config';
 import { promisify } from 'util';
 import * as path from 'path';
+import { last } from 'lodash';
 
 const cwd = process.cwd();
 
@@ -28,8 +29,10 @@ export async function build() {
             return <Router>
               ${pages
                 .map(
-                  () =>
-                    `<Route path=${path} component={lazy(() => import(${path}))}>`,
+                  (pagePath) =>
+                    `<Route path=${last(
+                      pagePath.split('.')[0].split('/'),
+                    )} component={lazy(() => import('${pagePath}'))}>`,
                 )
                 .join('\n')}
             </Router>

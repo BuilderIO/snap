@@ -1,5 +1,5 @@
-import express from 'express';
+import fastify from 'fastify';
 
-const server = express();
+const server = fastify();
 
 export { server };
