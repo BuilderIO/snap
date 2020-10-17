@@ -1,4 +1,4 @@
-const { Router } = require('_router.tsx');
+const { Router } = require('./_router.tsx');
 
 export function App() {
   return (

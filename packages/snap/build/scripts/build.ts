@@ -45,10 +45,11 @@ export async function build() {
       },
       plugins: [
         new VirtualModulesPlugin({
-          '_router.tsx': routerContents,
+          './_router.tsx': routerContents,
           './_entry.tsx': readFileSync(
             path.join(__dirname, '../../../lib/document.tsx'),
           ),
+          './app.tsx': readFileSync(path.join(__dirname, '../../../lib/app.tsx')),
         }),
       ],
     }),
@@ -84,7 +85,7 @@ export async function build() {
         },
         plugins: [
           new VirtualModulesPlugin({
-            '_router.tsx': pageRouterContents,
+            './_router.tsx': pageRouterContents,
             './_entry.tsx': readFileSync(
               path.join(__dirname, '../../../lib/app.tsx'),
             ),
