@@ -4,7 +4,8 @@ import webpack from 'webpack';
 import config from '../webpack.config';
 import { promisify } from 'util';
 import * as path from 'path';
-import { last } from 'lodash';
+import { last, flatMap } from 'lodash';
+import { Configuration } from 'webpack';
 
 const cwd = process.cwd();
 
@@ -17,29 +18,26 @@ export async function build() {
   const pages = await glob('pages/**/*');
 
   const compiler = webpack(
-    pages.map((pagePath) => ({
-      ...config(),
-      entry: pagePath,
-      output: {
-        path: path.join(cwd, 'dist', pagePath.split('.')[0]),
-      },
-      alias: {
-        router: `
-          export default function AppRouter() {
-            return <Router>
-              ${pages
-                .map(
-                  (pagePath) =>
-                    `<Route path=${last(
-                      pagePath.split('.')[0].split('/'),
-                    )} component={lazy(() => import('${pagePath}'))}>`,
-                )
-                .join('\n')}
-            </Router>
-          }
-        `,
-      },
-    })),
+    flatMap(pages, (pagePath) => {
+      const configs: Configuration[] = [
+        {
+          ...config(),
+          entry: pagePath,
+          output: {
+            path: path.join(cwd, 'dist', pagePath.split('.')[0]),
+          },
+        },
+        {
+          ...config(),
+          target: 'node',
+          entry: pagePath,
+          output: {
+            filename: path.join(pagePath.split('.')[0], 'server.js'),
+          },
+        },
+      ];
+      return configs;
+    }),
   );
 
   const run = promisify(compiler.run.bind(compiler));

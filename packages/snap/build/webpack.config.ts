@@ -8,9 +8,14 @@ const ts = require('@babel/preset-typescript');
 const env = require('@babel/preset-env');
 const TerserPlugin = require('terser-webpack-plugin');
 
+type Options = {
+  env?: 'development' | 'production';
+  target?: 'server' | 'browser';
+};
+
 console.log(path.join(__dirname, '../../../node_modules'));
 const config = (
-  _env: unknown = 'production',
+  options: Options = {},
   { mode = 'none' }: Configuration = {},
 ): Configuration => ({
   mode,
