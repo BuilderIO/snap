@@ -1,3 +1,5 @@
+import type {} from 'solid-js';
+
 export function Document(props: { children: any }) {
   return (
     <html>

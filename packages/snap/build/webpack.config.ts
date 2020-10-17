@@ -37,7 +37,13 @@ const config = (
         loader: 'babel-loader',
         options: {
           presets: [
-            solid,
+            [
+              solid,
+              {
+                hydratable: true,
+                generate: options.target === 'server' ? 'ssr' : 'dom',
+              },
+            ],
             ts,
             [
               env,

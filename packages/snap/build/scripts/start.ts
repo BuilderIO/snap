@@ -1,12 +1,15 @@
-(global as any).globalThis = global;
+Object.assign(global, {
+  globalThis: global,
+  isSSR: global,
+});
 
 import glob from 'glob-promise';
 import { join } from 'path';
 import { last } from 'lodash';
 import { server } from '../../lib/server';
-import { createComponent } from 'solid-js';
-const { renderToString } = require('solid-js/server');
+import { createComponent, renderToString } from 'solid-js/server';
 import { extractCss } from 'goober';
+const { ContextProvider } = require('solid-router/server');
 
 const cwd = process.cwd();
 
@@ -21,19 +24,30 @@ export async function start() {
   for (const page of pages) {
     const path = last(page.split('.')[0].split('/'));
     server.get(`/${path}`, async (req, res) => {
+      //   const { getProps, default: Component } = require(join(
+      //     process.cwd(),
+      //     'dist/pages',
+      //     path!,
+      //     'server',
+      //   ));
       const { getProps, default: Component } = require(join(
         process.cwd(),
-        'dist/pages',
-        path!,
-        'server',
+        'dist/server',
       ));
 
       const url = new URL(req.url, `${req.protocol}//${req.hostname}`);
-      const { props } = await getProps?.({ req, res, url });
+      //   const { props } = await getProps?.({ req, res, url });
 
       const str = renderToString(() =>
-        createComponent(Component, {
-          ...props,
+        createComponent(ContextProvider, {
+          options: {
+            initialEntries: [req.url],
+          },
+          children: [
+            createComponent(Component, {
+              //   ...props,
+            }),
+          ],
         }),
       );
       // TODO: pass this to head down as props
