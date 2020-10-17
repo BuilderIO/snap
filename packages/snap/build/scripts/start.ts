@@ -23,20 +23,22 @@ export async function start() {
 
   for (const page of pages) {
     const path = last(page.split('.')[0].split('/'));
-    server.get(`/${path}`, async (req, res) => {
+    server.get(`/${path === 'index' ? '' : path}`, async (req, res) => {
       //   const { getProps, default: Component } = require(join(
       //     process.cwd(),
       //     'dist/pages',
       //     path!,
       //     'server',
       //   ));
-      const { getProps, default: Component } = require(join(
+      const { getProps, Document } = require(join(
         process.cwd(),
         'dist/server',
       ));
 
-      const url = new URL(req.url, `${req.protocol}//${req.hostname}`);
-      //   const { props } = await getProps?.({ req, res, url });
+      console.log({ Document, ContextProvider });
+
+      // const url = new URL(req.url, `${req.protocol}//${req.hostname}`);
+      // const { props } = await getProps?.({ req, res, url });
 
       const str = renderToString(() =>
         createComponent(ContextProvider, {
@@ -44,7 +46,7 @@ export async function start() {
             initialEntries: [req.url],
           },
           children: [
-            createComponent(Component, {
+            createComponent(Document, {
               //   ...props,
             }),
           ],
@@ -52,6 +54,7 @@ export async function start() {
       );
       // TODO: pass this to head down as props
       const css = extractCss();
+      res.type('text/html');
       res.send(str);
     });
   }

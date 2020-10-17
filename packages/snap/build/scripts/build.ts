@@ -26,22 +26,26 @@ export async function build() {
       return <SolidRouter>
         ${pageNames
           .map((pageName, index) => {
-            return `<Route path="/${pageName}" component={require('./${pages[index]}')}`;
+            return `<Route path="/${pageName}" component={createComponent(require('./${pages[index]}').default, {})}`;
           })
           .join('\n')}
       </SolidRouter>;
     }
   `;
 
+  console.log({ routerContents });
+
   const configs: Configuration[] = [
     merge(config({ target: 'server' }), {
       entry: './_entry.tsx',
+      target: 'node',
       output: {
-        path: path.join(cwd, 'dist/server.js'),
+        filename: 'server.js',
+        libraryTarget: 'commonjs',
       },
       plugins: [
         new VirtualModulesPlugin({
-          './_router.tsx': routerContents,
+          '_router.tsx': routerContents,
           './_entry.tsx': readFileSync(
             path.join(__dirname, '../../../lib/document.tsx'),
           ),
@@ -73,15 +77,14 @@ export async function build() {
         `;
 
       return merge(config({ target: 'browser' }), {
-        target: 'node',
         // TODO: this needs to have hydrate(document.getElementById('app), () => <App />)
         entry: './_entry.tsx',
         output: {
-          filename: path.join(pagePath.split('.')[0], 'server.js'),
+          path: path.join(process.cwd(), 'dist', pagePath.split('.')[0]),
         },
         plugins: [
           new VirtualModulesPlugin({
-            './_router.tsx': pageRouterContents,
+            '_router.tsx': pageRouterContents,
             './_entry.tsx': readFileSync(
               path.join(__dirname, '../../../lib/app.tsx'),
             ),
