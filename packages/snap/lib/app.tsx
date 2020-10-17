@@ -1,5 +1,9 @@
-import {} from 'solid-js';
+const { Router } = require('_router');
 
 export function App() {
-  return <div>Hi</div>;
+  return (
+    <div>
+      <Router />
+    </div>
+  );
 }

@@ -1,11 +1,11 @@
-import {} from 'solid-js';
-
-export function Document() {
+export function Document(props: { children: any }) {
   return (
     <html>
       <head>{/* TODO: head component */}</head>
       <body>
-        <div id="app"></div>
+        <div id="app">{props.children}</div>
+
+        {/* TODO: add transfer data */}
       </body>
     </html>
   );

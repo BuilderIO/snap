@@ -3,6 +3,7 @@
 import { program } from 'commander';
 import { build } from './scripts/build';
 import { dev } from './scripts/dev';
+import { start } from './scripts/start';
 
 program.version('0.0.1');
 
@@ -14,9 +15,15 @@ program
   });
 program
   .command('dev')
-  .description('Build your site')
+  .description('Dev your site')
   .action((source, destination) => {
     dev();
+  });
+program
+  .command('start')
+  .description('Start your site')
+  .action((source, destination) => {
+    start();
   });
 
 program.parse(process.argv);
