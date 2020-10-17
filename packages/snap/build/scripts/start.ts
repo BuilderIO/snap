@@ -7,9 +7,7 @@ import glob from 'glob-promise';
 import { join } from 'path';
 import { last } from 'lodash';
 import { server } from '../../lib/server';
-import { createComponent, renderToString } from 'solid-js/server';
 import { extractCss } from 'goober';
-const { ContextProvider } = require('solid-router/server');
 
 const cwd = process.cwd();
 
@@ -30,18 +28,21 @@ export async function start() {
       //     path!,
       //     'server',
       //   ));
-      const { getProps, Document } = require(join(
-        process.cwd(),
-        'dist/server',
-      ));
+      const {
+        getProps,
+        Document,
+        HistoryContextProvider,
+        renderToString,
+        createComponent,
+      } = require(join(process.cwd(), 'dist/server'));
 
-      console.log({ Document, ContextProvider });
+      console.log({ Document, HistoryContextProvider });
 
       // const url = new URL(req.url, `${req.protocol}//${req.hostname}`);
       // const { props } = await getProps?.({ req, res, url });
 
       const str = renderToString(() =>
-        createComponent(ContextProvider, {
+        createComponent(HistoryContextProvider, {
           options: {
             initialEntries: [req.url],
           },

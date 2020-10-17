@@ -6,7 +6,7 @@ import * as path from 'path';
 import { last } from 'lodash';
 import { merge } from 'webpack-merge';
 import { Configuration } from 'webpack';
-import { readFileSync } from 'fs-extra-promise';
+import { readFileSync, readFileAsync } from 'fs-extra-promise';
 const VirtualModulesPlugin = require('webpack-virtual-modules');
 
 const cwd = process.cwd();
@@ -20,20 +20,19 @@ export async function build() {
   const pageNames = pages.map((item) => last(item.split('.')[0].split('/')));
 
   const routerContents = `
-    import { Route, SolidRouter } from '@builder.io/snap/router';
+    import { Route, Router as SolidRouter } from '@builder.io/snap/router';
+    import { createComponent } from 'solid-js/server';
+    
     export function Router() {
-
-      return <SolidRouter>
+      return (<SolidRouter>
         ${pageNames
           .map((pageName, index) => {
-            return `<Route path="/${pageName}" component={createComponent(require('./${pages[index]}').default, {})}`;
+            return `<Route path="/${pageName}" component={createComponent(require('./${pages[index]}').default, {})} />`;
           })
           .join('\n')}
-      </SolidRouter>;
+      </SolidRouter>);
     }
   `;
-
-  console.log({ routerContents });
 
   const configs: Configuration[] = [
     merge(config({ target: 'server' }), {
@@ -43,27 +42,42 @@ export async function build() {
         filename: 'server.js',
         libraryTarget: 'commonjs',
       },
+      externals: /solid-js/,
+      resolve: {
+        alias: {
+          // 'solid-js/dom': 'solid-js/server',
+          'solid-router': path.resolve(
+            __dirname,
+            '../../../node_modules/solid-router/server',
+          ),
+        },
+      },
       plugins: [
         new VirtualModulesPlugin({
           './_router.tsx': routerContents,
-          './_entry.tsx': readFileSync(
+          './_entry.tsx': await readFileAsync(
             path.join(__dirname, '../../../lib/document.tsx'),
+            'utf8',
           ),
-          './app.tsx': readFileSync(path.join(__dirname, '../../../lib/app.tsx')),
+          './app.tsx': await readFileAsync(
+            path.join(__dirname, '../../../lib/app.tsx'),
+            'utf8',
+          ),
         }),
       ],
     }),
-    ...pages.map((pagePath, index) => {
-      const pageName = pageNames[index];
-      const pageRouterContents = `
-        import { Route, SolidRouter, ContextProvider } from '@builder.io/snap/router';
-        import { lazy, Suspense, createComponent } from 'solid-js';
+    ...(await Promise.all(
+      pages.map(async (pagePath, index) => {
+        const pageName = pageNames[index];
+        const pageRouterContents = `
+        import { Route, Router as SolidRouter, ContextProvider } from '@builder.io/snap/router';
+        import { lazy, Suspense, createComponent } from 'solid-js/dom';
         import Main from './pages/${pageName}';
 
         export function Router() {
 
           // TODO: 404
-          return <SolidRouter>
+          return (<SolidRouter>
             ${pageNames
               .map((pageName, thisIndex) => {
                 return `<Route path="/${pageName}" component={${
@@ -73,26 +87,29 @@ export async function build() {
                 }} />`;
               })
               .join('\n')}
-          </SolidRouter>;
+          </SolidRouter>);
         }
         `;
 
-      return merge(config({ target: 'browser' }), {
-        // TODO: this needs to have hydrate(document.getElementById('app), () => <App />)
-        entry: './_entry.tsx',
-        output: {
-          path: path.join(process.cwd(), 'dist', pagePath.split('.')[0]),
-        },
-        plugins: [
-          new VirtualModulesPlugin({
-            './_router.tsx': pageRouterContents,
-            './_entry.tsx': readFileSync(
-              path.join(__dirname, '../../../lib/app.tsx'),
-            ),
-          }),
-        ],
-      });
-    }),
+        return merge(config({ target: 'browser' }), {
+          // TODO: this needs to have hydrate(document.getElementById('app), () => <App />)
+          entry: './_entry.tsx',
+          output: {
+            path: path.join(process.cwd(), 'dist', pagePath.split('.')[0]),
+          },
+          
+          plugins: [
+            new VirtualModulesPlugin({
+              './_router.tsx': pageRouterContents,
+              './_entry.tsx': await readFileAsync(
+                path.join(__dirname, '../../../lib/app.tsx'),
+                'utf8',
+              ),
+            }),
+          ],
+        });
+      }),
+    )),
   ];
 
   const compiler = webpack(configs);
