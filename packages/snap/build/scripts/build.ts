@@ -20,7 +20,7 @@ export async function build() {
   const pageNames = pages.map((item) => last(item.split('.')[0].split('/')));
 
   const routerContents = `
-    import { Route, Router as SolidRouter } from '@builder.io/snap/router';
+    import { Route, Router as SolidRouter } from '@snap.js/core/router';
     import { createComponent } from 'solid-js/server';
     
     export function Router() {
@@ -45,10 +45,14 @@ export async function build() {
       externals: /solid-js/,
       resolve: {
         alias: {
+          'solid-router/server': path.resolve(
+            __dirname,
+            '../../../node_modules/solid-router/dist/server/index.cjs.js',
+          ),
           // 'solid-js/dom': 'solid-js/server',
           'solid-router': path.resolve(
             __dirname,
-            '../../../node_modules/solid-router/server',
+            '../../../node_modules/solid-router/dist/server/index.cjs.js',
           ),
         },
       },
@@ -70,7 +74,7 @@ export async function build() {
       pages.map(async (pagePath, index) => {
         const pageName = pageNames[index];
         const pageRouterContents = `
-        import { Route, Router as SolidRouter, ContextProvider } from '@builder.io/snap/router';
+        import { Route, Router as SolidRouter, ContextProvider } from '@snap.js/core/router';
         import { lazy, Suspense, createComponent } from 'solid-js/dom';
         import Main from './pages/${pageName}';
 
@@ -97,7 +101,7 @@ export async function build() {
           output: {
             path: path.join(process.cwd(), 'dist', pagePath.split('.')[0]),
           },
-          
+
           plugins: [
             new VirtualModulesPlugin({
               './_router.tsx': pageRouterContents,

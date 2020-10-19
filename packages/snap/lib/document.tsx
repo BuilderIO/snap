@@ -1,6 +1,6 @@
 import type {} from 'solid-js';
 const { App } = require('./app.tsx');
-const { ContextProvider } = require('@builder.io/snap/router')
+const { ContextProvider } = require('@snap.js/core/router')
 export { createComponent, renderToString } from 'solid-js/server';
 require("@babel/polyfill");
 

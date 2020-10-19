@@ -1,5 +1,5 @@
 {
-  "name": "@builder.io/snap-example-basic",
+  "name": "@snap.js/example-basic",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,8 +8,7 @@
     "start": "snap start"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.12.1",
-    "@builder.io/snap": "../../packages/snap",
+    "@snap.js/core": "../../packages/snap",
     "solid-js": "latest"
   }
 }

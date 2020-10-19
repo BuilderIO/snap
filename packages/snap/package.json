@@ -1,9 +1,8 @@
 {
-  "name": "@builder.io/snap",
+  "name": "@snap.js/core",
   "version": "0.1.0",
-  "description": "Input component",
-  "author": "chef <serhii.havrylenko@gmail.com>",
-  "homepage": "https://github.com/serhii-havrylenko/monorepo-babel-ts-lerna-starter",
+  "description": "Snap core",
+  "homepage": "https://github.com/@builder.io/snap",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
