@@ -11,6 +11,7 @@ The web framework for [Solid](https://github.com/ryansolid/solid)
 - Prefetching
 - Bleeding edge performance
 - Easy to get started building with [Solid](https://github.com/ryansolid/solid) with prescriptive best practices
+- Robust plugin system
 
 ## Getting started
 
