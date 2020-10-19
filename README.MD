@@ -12,6 +12,7 @@ The web framework for [Solid](https://github.com/ryansolid/solid)
 - Bleeding edge performance
 - Easy to get started building with [Solid](https://github.com/ryansolid/solid) with prescriptive best practices
 - Robust plugin system
+- Options to render server side, statically, or a hybrid (e.g. with [stale-while-revalidate](https://web.dev/stale-while-revalidate/) at the edge)
 
 ## Getting started
 
