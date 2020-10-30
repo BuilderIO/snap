@@ -13,7 +13,7 @@ type Options = {
   target?: 'server' | 'browser';
 };
 
-console.log(path.join(__dirname, '../../../node_modules'));
+
 const config = (
   options: Options = {},
   { mode = 'none' }: Configuration = {},

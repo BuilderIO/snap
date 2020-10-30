@@ -28,6 +28,9 @@ export async function start() {
       //     path!,
       //     'server',
       //   ));
+
+      console.log('\n\n\nyo');
+
       const {
         getProps,
         Document,

@@ -8,6 +8,7 @@
     "start": "snap start"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
     "@snap.js/core": "../../packages/snap",
     "solid-js": "latest"
   }

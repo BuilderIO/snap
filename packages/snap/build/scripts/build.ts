@@ -6,7 +6,7 @@ import * as path from 'path';
 import { last } from 'lodash';
 import { merge } from 'webpack-merge';
 import { Configuration } from 'webpack';
-import { readFileSync, readFileAsync } from 'fs-extra-promise';
+import { readFileAsync, copyAsync } from 'fs-extra-promise';
 const VirtualModulesPlugin = require('webpack-virtual-modules');
 
 const cwd = process.cwd();
@@ -42,7 +42,7 @@ export async function build() {
         filename: 'server.js',
         libraryTarget: 'commonjs',
       },
-      externals: /solid-js/,
+      externals: /^[^\.]/,
       resolve: {
         alias: {
           'solid-router/server': path.resolve(
@@ -119,6 +119,11 @@ export async function build() {
   const compiler = webpack(configs);
 
   const run = promisify(compiler.run.bind(compiler));
+
+  const copyPromise = copyAsync('public', 'dist');
+
   const stats = await run();
   console.log(stats?.toString({}));
+
+  await copyPromise;
 }
