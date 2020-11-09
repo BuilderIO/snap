@@ -24,17 +24,19 @@ export async function start() {
     const path = last(page.split('.')[0].split('/'));
     server.get(`/${path === 'index' ? '' : path}`, async (req, res) => {
       const {
-        getProps,
+        routes,
         Document,
         renderToString,
         createComponent,
       } = require(join(process.cwd(), 'dist/server'));
 
+      // TODO: grab here and from JSON in browser and pass down as context
       // const url = new URL(req.url, `${req.protocol}//${req.hostname}`);
       // const { props } = await getProps?.({ req, res, url });
 
       const str = renderToString(() =>
-        createComponent(ContextProvider, {
+        createComponent(Router, {
+          initialUrl: req.url,
           options: {
             initialEntries: [req.url],
           },
