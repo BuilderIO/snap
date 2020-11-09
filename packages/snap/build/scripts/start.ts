@@ -8,6 +8,7 @@ import { join } from 'path';
 import { last } from 'lodash';
 import { server } from '../../lib/server';
 import { extractCss } from 'goober';
+import { ContextProvider } from 'solid-router/server';
 
 const cwd = process.cwd();
 
@@ -22,30 +23,18 @@ export async function start() {
   for (const page of pages) {
     const path = last(page.split('.')[0].split('/'));
     server.get(`/${path === 'index' ? '' : path}`, async (req, res) => {
-      //   const { getProps, default: Component } = require(join(
-      //     process.cwd(),
-      //     'dist/pages',
-      //     path!,
-      //     'server',
-      //   ));
-
-      console.log('\n\n\nyo');
-
       const {
         getProps,
         Document,
-        HistoryContextProvider,
         renderToString,
         createComponent,
       } = require(join(process.cwd(), 'dist/server'));
-
-      console.log({ Document, HistoryContextProvider });
 
       // const url = new URL(req.url, `${req.protocol}//${req.hostname}`);
       // const { props } = await getProps?.({ req, res, url });
 
       const str = renderToString(() =>
-        createComponent(HistoryContextProvider, {
+        createComponent(ContextProvider, {
           options: {
             initialEntries: [req.url],
           },

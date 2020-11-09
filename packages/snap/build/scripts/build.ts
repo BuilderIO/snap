@@ -83,6 +83,9 @@ export async function build() {
           // TODO: 404
           return (<SolidRouter>
             ${pageNames
+              // TODO: get rid of this per page logic and just do one entry for browser as solid's
+              // Suspense allows us to make all imports lazy here
+              // also move to solid-app-router
               .map((pageName, thisIndex) => {
                 return `<Route path="/${pageName}" component={${
                   thisIndex === index
