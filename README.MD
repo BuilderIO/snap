@@ -13,6 +13,7 @@ The web framework for lightening fast web sites and apps. Compiles to fast, low 
 - Bleeding edge performance
 - Easy to get started building with [Solid](https://github.com/ryansolid/solid) with prescriptive best practices
 - Robust plugin system
+- Native support for [JSX Lite](https://github.com/BuilderIO/jsx-lite) for visual drag/drop editing
 - Options to render server side, statically, or a hybrid (e.g. with [stale-while-revalidate](https://web.dev/stale-while-revalidate/) at the edge)
 
 ## Getting started
