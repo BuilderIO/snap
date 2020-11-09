@@ -8,7 +8,7 @@ import { join } from 'path';
 import { last } from 'lodash';
 import { server } from '../../lib/server';
 import { extractCss } from 'goober';
-import { ContextProvider } from 'solid-router/server';
+import { Router } from 'solid-app-router';
 
 const cwd = process.cwd();
 

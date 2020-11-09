@@ -19,7 +19,7 @@ export async function build() {
 
   const pageNames = pages.map((item) => last(item.split('.')[0].split('/')));
 
-  const routerContents = `
+  const serverRouterContents = `
     import { Route, Router as SolidRouter } from '@snap.js/core/router';
     import { createComponent } from 'solid-js/server';
     
@@ -28,6 +28,23 @@ export async function build() {
         ${pageNames
           .map((pageName, index) => {
             return `<Route path="/${pageName}" component={createComponent(require('./${pages[index]}').default, {})} />`;
+          })
+          .join('\n')}
+      </SolidRouter>);
+    }
+  `;
+
+  const browserRouterContents = `
+    import { Route, Router as SolidRouter, ContextProvider } from '@snap.js/core/router';
+    import { lazy, Suspense, createComponent } from 'solid-js/dom';
+
+    export function Router() {
+
+      // TODO: 404
+      return (<SolidRouter>
+        ${pageNames
+          .map((pageName, thisIndex) => {
+            return `<Route path="/${pageName}" component={createComponent(lazy(() => import('./${pages[thisIndex]}')))} />`;
           })
           .join('\n')}
       </SolidRouter>);
@@ -43,22 +60,9 @@ export async function build() {
         libraryTarget: 'commonjs',
       },
       externals: /^[^\.]/,
-      resolve: {
-        alias: {
-          'solid-router/server': path.resolve(
-            __dirname,
-            '../../../node_modules/solid-router/dist/server/index.cjs.js',
-          ),
-          // 'solid-js/dom': 'solid-js/server',
-          'solid-router': path.resolve(
-            __dirname,
-            '../../../node_modules/solid-router/dist/server/index.cjs.js',
-          ),
-        },
-      },
       plugins: [
         new VirtualModulesPlugin({
-          './_router.tsx': routerContents,
+          './_router.tsx': serverRouterContents,
           './_entry.tsx': await readFileAsync(
             path.join(__dirname, '../../../lib/document.tsx'),
             'utf8',
@@ -70,53 +74,28 @@ export async function build() {
         }),
       ],
     }),
-    ...(await Promise.all(
-      pages.map(async (pagePath, index) => {
-        const pageName = pageNames[index];
-        const pageRouterContents = `
-        import { Route, Router as SolidRouter, ContextProvider } from '@snap.js/core/router';
-        import { lazy, Suspense, createComponent } from 'solid-js/dom';
-        import Main from './pages/${pageName}';
+    merge(config({ target: 'browser' }), {
+      // TODO: this needs to have
+      entry: './_entry.tsx',
+      output: {
+        path: 'browser',
+      },
 
-        export function Router() {
-
-          // TODO: 404
-          return (<SolidRouter>
-            ${pageNames
-              // TODO: get rid of this per page logic and just do one entry for browser as solid's
-              // Suspense allows us to make all imports lazy here
-              // also move to solid-app-router
-              .map((pageName, thisIndex) => {
-                return `<Route path="/${pageName}" component={${
-                  thisIndex === index
-                    ? '<Main />'
-                    : `createComponent(lazy(() => import('./${pages[thisIndex]}')))`
-                }} />`;
-              })
-              .join('\n')}
-          </SolidRouter>);
-        }
-        `;
-
-        return merge(config({ target: 'browser' }), {
-          // TODO: this needs to have hydrate(document.getElementById('app), () => <App />)
-          entry: './_entry.tsx',
-          output: {
-            path: path.join(process.cwd(), 'dist', pagePath.split('.')[0]),
-          },
-
-          plugins: [
-            new VirtualModulesPlugin({
-              './_router.tsx': pageRouterContents,
-              './_entry.tsx': await readFileAsync(
-                path.join(__dirname, '../../../lib/app.tsx'),
-                'utf8',
-              ),
-            }),
-          ],
-        });
-      }),
-    )),
+      plugins: [
+        new VirtualModulesPlugin({
+          './_router.tsx': browserRouterContents,
+          './_entry.tsx': `
+            import { App } from './app';
+            import { hydrate } from 'solid-js/dom';
+            hydrate(document.getElementById('app), () => <App />)
+          `,
+          './app.tsx': await readFileAsync(
+            path.join(__dirname, '../../../lib/app.tsx'),
+            'utf8',
+          ),
+        }),
+      ],
+    }),
   ];
 
   const compiler = webpack(configs);
