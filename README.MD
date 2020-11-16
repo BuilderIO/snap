@@ -13,9 +13,8 @@ Compiles to fast, low level JS via [Solid](https://github.com/ryansolid/solid). 
 - Easy data fetching and transfer
 - Prefetching
 - Bleeding edge performance
-- Easy to get started building with [Solid](https://github.com/ryansolid/solid) with prescriptive best practices
+- Easy to get started building with [Solid](https://github.com/ryansolid/solid) or [JSX Lite](https://github.com/BuilderIO/jsx-lite) with prescriptive best practices
 - Robust plugin system
-- Native support for [JSX Lite](https://github.com/BuilderIO/jsx-lite) for visual drag/drop editing
 - Options to render server side, statically, or a hybrid (e.g. with [stale-while-revalidate](https://web.dev/stale-while-revalidate/) at the edge)
 
 ## Getting started
